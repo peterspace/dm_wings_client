@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { useParams } from "react-router-dom";
 
 import {
@@ -16,7 +15,6 @@ import {
 const Home = () => {
   const params = useParams();
   const { event, client_ip_address, fbclid, external_id } = params;
-  const backend = import.meta.env.VITE_BACKEND_URL;
   const [errorMessage, setErrorMessage] = useState();
   const [facebookResponse, setFacebookResponse] = useState();
   const [initialData, setInitialData] = useState();
@@ -83,7 +81,7 @@ const Home = () => {
       try {
         const data = await leadEvent(userData);
         setFacebookResponse("Lead event logged successfully");
-        await sendPurchaseOnServer(); // send notification to server
+
         setInitialData(null);
       } catch (error) {
         // alert("Lead error");
@@ -120,7 +118,6 @@ const Home = () => {
         // const data = purchaseEvent()
         const data = await purchaseEvent(userData);
         setFacebookResponse("Purchase event logged successfully");
-        await sendPurchaseOnServer(); // send notification to server
         setInitialData(null);
       } catch (error) {
         // alert("Purchase error");
@@ -134,19 +131,6 @@ const Home = () => {
   async function userRegistration() {
     signUpOTPVerificationEvent();
     signUpPhoneNumberEvent();
-  }
-
-  async function sendPurchaseOnServer() {
-    const url = `${backend}/facebook_event_notification?event=${event}`;
-
-    try {
-      const response = await axios.get(url);
-      // if (response.data) {
-      //   console.log({ response: response.data });
-      // }
-    } catch (error) {
-      console.log({ error });
-    }
   }
 
   return (
